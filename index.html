@@ -560,7 +560,7 @@
       let lockBoard = false;
       let audioCtx;
       let deferredPrompt;
-      const EXPONENTIAL_RAMP_MIN_VALUE = 0.0001;
+      const MIN_GAIN_VALUE = 0.0001;
       const TONE_PEAK_GAIN = 0.2;
       const TONE_ATTACK_TIME = 0.02;
       const TONE_RELEASE_TIME = 0.5;
@@ -824,12 +824,15 @@
           osc.type = 'triangle';
           osc.frequency.value = Number(frequency);
           // Exponential ramps cannot reach exactly zero, so a tiny minimum avoids runtime errors.
-          gain.gain.setValueAtTime(EXPONENTIAL_RAMP_MIN_VALUE, audioCtx.currentTime);
+          gain.gain.setValueAtTime(MIN_GAIN_VALUE, audioCtx.currentTime);
           gain.gain.exponentialRampToValueAtTime(TONE_PEAK_GAIN, audioCtx.currentTime + TONE_ATTACK_TIME);
-          gain.gain.exponentialRampToValueAtTime(EXPONENTIAL_RAMP_MIN_VALUE, audioCtx.currentTime + TONE_RELEASE_TIME);
+          gain.gain.exponentialRampToValueAtTime(
+            MIN_GAIN_VALUE,
+            audioCtx.currentTime + TONE_ATTACK_TIME + TONE_RELEASE_TIME
+          );
           osc.connect(gain).connect(audioCtx.destination);
           osc.start();
-          osc.stop(audioCtx.currentTime + TONE_RELEASE_TIME);
+          osc.stop(audioCtx.currentTime + TONE_ATTACK_TIME + TONE_RELEASE_TIME);
         } catch (error) {
           console.warn('Audio unavailable', error);
         }
