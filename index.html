@@ -568,6 +568,7 @@
       let localAudioUrls = [];
       let audioCtx;
       let deferredPrompt;
+      const EXPONENTIAL_RAMP_MIN_VALUE = 0.0001;
 
       function safeSpeak(text) {
         if (!window.speechSynthesis) return;
@@ -776,6 +777,15 @@
         });
       }
 
+      function isAllowedMediaUrl(value, allowedProtocols) {
+        try {
+          const parsed = new URL(value, window.location.href);
+          return allowedProtocols.includes(parsed.protocol);
+        } catch (error) {
+          return false;
+        }
+      }
+
       function buildLocalAudioList(files) {
         const root = document.getElementById('localAudioList');
         localAudioUrls.forEach((url) => URL.revokeObjectURL(url));
@@ -790,6 +800,10 @@
           title.textContent = file.name;
           const audio = document.createElement('audio');
           audio.controls = true;
+          if (!isAllowedMediaUrl(url, ['blob:', 'data:'])) {
+            URL.revokeObjectURL(url);
+            return;
+          }
           audio.src = url;
           card.appendChild(title);
           card.appendChild(audio);
@@ -816,7 +830,9 @@
           if (entry.url) {
             button.textContent = 'Open Link';
             button.addEventListener('click', () => {
-              window.open(entry.url, '_blank', 'noopener');
+              if (isAllowedMediaUrl(entry.url, ['http:', 'https:'])) {
+                window.open(entry.url, '_blank', 'noopener');
+              }
             });
           } else {
             button.textContent = 'Add URL in media-config.js';
@@ -838,9 +854,9 @@
           osc.type = 'triangle';
           osc.frequency.value = Number(frequency);
           // Exponential ramps cannot reach exactly zero, so a tiny minimum avoids runtime errors.
-          gain.gain.value = 0.0001;
+          gain.gain.value = EXPONENTIAL_RAMP_MIN_VALUE;
           gain.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.02);
-          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+          gain.gain.exponentialRampToValueAtTime(EXPONENTIAL_RAMP_MIN_VALUE, audioCtx.currentTime + 0.5);
           osc.connect(gain).connect(audioCtx.destination);
           osc.start();
           osc.stop(audioCtx.currentTime + 0.5);
@@ -894,6 +910,10 @@
       window.addEventListener('beforeinstallprompt', (event) => {
         event.preventDefault();
         deferredPrompt = event;
+      });
+
+      window.addEventListener('beforeunload', () => {
+        localAudioUrls.forEach((url) => URL.revokeObjectURL(url));
       });
 
       initNavigation();
