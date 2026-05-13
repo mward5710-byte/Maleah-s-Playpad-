@@ -434,7 +434,7 @@
   </head>
   <body>
     <section id="intro" class="intro">
-      <h1 role="heading" aria-level="1">Maleah’s Playpad</h1>
+      <h1>Maleah’s Playpad</h1>
       <p class="subtitle">Daddy’s Baby Girl.</p>
       <p class="hello">Hello Maleah! Daddy made this magical learning world just for you. Let’s count, match, color, and sing.</p>
       <button class="start-btn" id="startBtn" type="button">Tap to Start Learning ✨</button>
@@ -521,13 +521,6 @@
 
           <div class="list" id="configuredSongs"></div>
 
-          <div class="media-item">
-            <h4>Play audio from this device</h4>
-            <p>Select your own audio files for this session:</p>
-            <input id="localAudioInput" type="file" accept="audio/*" multiple />
-            <div class="list" id="localAudioList"></div>
-          </div>
-
           <div class="legal-note">Only add audio you own, created, licensed, or are otherwise legally allowed to use.</div>
         </article>
       </section>
@@ -565,7 +558,6 @@
       let matchDeck = [];
       let selectedCards = [];
       let lockBoard = false;
-      let localAudioUrls = [];
       let audioCtx;
       let deferredPrompt;
       const EXPONENTIAL_RAMP_MIN_VALUE = 0.0001;
@@ -786,31 +778,6 @@
         }
       }
 
-      function buildLocalAudioList(files) {
-        const root = document.getElementById('localAudioList');
-        localAudioUrls.forEach((url) => URL.revokeObjectURL(url));
-        localAudioUrls = [];
-        root.innerHTML = '';
-        Array.from(files).forEach((file) => {
-          const url = URL.createObjectURL(file);
-          localAudioUrls.push(url);
-          const card = document.createElement('div');
-          card.className = 'media-item';
-          const title = document.createElement('h4');
-          title.textContent = file.name;
-          const audio = document.createElement('audio');
-          audio.controls = true;
-          if (!isAllowedMediaUrl(url, ['blob:', 'data:'])) {
-            URL.revokeObjectURL(url);
-            return;
-          }
-          audio.src = url;
-          card.appendChild(title);
-          card.appendChild(audio);
-          root.appendChild(card);
-        });
-      }
-
       function buildExternalLinks() {
         const root = document.getElementById('externalLinks');
         root.innerHTML = '';
@@ -854,7 +821,7 @@
           osc.type = 'triangle';
           osc.frequency.value = Number(frequency);
           // Exponential ramps cannot reach exactly zero, so a tiny minimum avoids runtime errors.
-          gain.gain.value = EXPONENTIAL_RAMP_MIN_VALUE;
+          gain.gain.setValueAtTime(EXPONENTIAL_RAMP_MIN_VALUE, audioCtx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.02);
           gain.gain.exponentialRampToValueAtTime(EXPONENTIAL_RAMP_MIN_VALUE, audioCtx.currentTime + 0.5);
           osc.connect(gain).connect(audioCtx.destination);
@@ -891,7 +858,6 @@
       document.getElementById('addFishBtn').addEventListener('click', updateFish);
       document.getElementById('resetFishBtn').addEventListener('click', resetFish);
       document.getElementById('newMatchBtn').addEventListener('click', buildMatchGame);
-      document.getElementById('localAudioInput').addEventListener('change', (event) => buildLocalAudioList(event.target.files));
       document.querySelectorAll('[data-tone]').forEach((button) => {
         button.addEventListener('click', () => playTone(button.dataset.tone));
       });
@@ -910,10 +876,6 @@
       window.addEventListener('beforeinstallprompt', (event) => {
         event.preventDefault();
         deferredPrompt = event;
-      });
-
-      window.addEventListener('beforeunload', () => {
-        localAudioUrls.forEach((url) => URL.revokeObjectURL(url));
       });
 
       initNavigation();
