@@ -1,3 +1,8 @@
+/**
+ * @typedef {{title:string, src:string, note?:string}} PlaypadSong
+ * @typedef {{title:string, url:string, note?:string}} PlaypadExternalLink
+ * @type {{greetingAudio:string, songs:PlaypadSong[], externalLinks:PlaypadExternalLink[]}}
+ */
 window.PLAYPAD_MEDIA_CONFIG = {
   greetingAudio: '',
   songs: [

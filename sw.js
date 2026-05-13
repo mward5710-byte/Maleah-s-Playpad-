@@ -25,7 +25,7 @@ self.addEventListener('fetch', (event) => {
 
   const requestUrl = new URL(event.request.url);
 
-  // Never cache or intercept external streaming/content origins.
+  // Returning early here lets external requests bypass SW interception and caching entirely.
   if (requestUrl.origin !== self.location.origin) return;
 
   if (event.request.mode === 'navigate') {

@@ -434,8 +434,8 @@
   </head>
   <body>
     <section id="intro" class="intro">
-      <h1>Maleah’s Playpad</h1>
-      <p class="subtitle">Daddy’s Baby Girl</p>
+      <h1 role="heading" aria-level="1">Maleah’s Playpad</h1>
+      <p class="subtitle">Daddy’s Baby Girl.</p>
       <p class="hello">Hello Maleah! Daddy made this magical learning world just for you. Let’s count, match, color, and sing.</p>
       <button class="start-btn" id="startBtn" type="button">Tap to Start Learning ✨</button>
     </section>
@@ -498,12 +498,12 @@
           <div class="palette" id="palette"></div>
           <div class="color-board">
             <svg viewBox="0 0 260 170" role="img" aria-label="Coloring board with stars, fish, shell, moon and heart">
-              <circle class="paint-region" data-target="moon" id="moon" cx="35" cy="35" r="18" fill="#fff7cd" stroke="#333" stroke-width="2"></circle>
-              <polygon class="paint-region" data-target="star" id="star" points="90,18 97,34 114,36 101,47 104,64 90,55 76,64 79,47 66,36 83,34" fill="#ffe3a2" stroke="#333" stroke-width="2"></polygon>
-              <ellipse class="paint-region" data-target="fish" id="fish" cx="153" cy="70" rx="32" ry="20" fill="#bde7ff" stroke="#333" stroke-width="2"></ellipse>
-              <polygon class="paint-region" data-target="tail" id="tail" points="182,70 205,55 205,85" fill="#8ac8f8" stroke="#333" stroke-width="2"></polygon>
-              <path class="paint-region" data-target="shell" id="shell" d="M55 130 C55 95, 108 95, 108 130 Z" fill="#ffd7de" stroke="#333" stroke-width="2"></path>
-              <path class="paint-region" data-target="heart" id="heart" d="M195 123 C195 106 217 100 225 117 C233 100 255 106 255 123 C255 138 239 145 225 157 C211 145 195 138 195 123 Z" fill="#ffc4ee" stroke="#333" stroke-width="2"></path>
+              <circle class="paint-region" data-target="moon" id="moon" aria-label="Moon shape" cx="35" cy="35" r="18" fill="#fff7cd" stroke="#333" stroke-width="2"></circle>
+              <polygon class="paint-region" data-target="star" id="star" aria-label="Star shape" points="90,18 97,34 114,36 101,47 104,64 90,55 76,64 79,47 66,36 83,34" fill="#ffe3a2" stroke="#333" stroke-width="2"></polygon>
+              <ellipse class="paint-region" data-target="fish" id="fish" aria-label="Fish body shape" cx="153" cy="70" rx="32" ry="20" fill="#bde7ff" stroke="#333" stroke-width="2"></ellipse>
+              <polygon class="paint-region" data-target="tail" id="tail" aria-label="Fish tail shape" points="182,70 205,55 205,85" fill="#8ac8f8" stroke="#333" stroke-width="2"></polygon>
+              <path class="paint-region" data-target="shell" id="shell" aria-label="Shell shape" d="M55 130 C55 95, 108 95, 108 130 Z" fill="#ffd7de" stroke="#333" stroke-width="2"></path>
+              <path class="paint-region" data-target="heart" id="heart" aria-label="Heart shape" d="M195 123 C195 106 217 100 225 117 C233 100 255 106 255 123 C255 138 239 145 225 157 C211 145 195 138 195 123 Z" fill="#ffc4ee" stroke="#333" stroke-width="2"></path>
             </svg>
           </div>
         </article>
@@ -514,9 +514,9 @@
           <h3>🎵 Music & Lullabies</h3>
           <p>Use your own lawful audio files (family recordings, licensed songs, or public-domain performances).</p>
           <div class="actions">
-            <button type="button" class="pill" data-tone="261.63">Do</button>
-            <button type="button" class="pill" data-tone="329.63">Mi</button>
-            <button type="button" class="pill" data-tone="392.0">So</button>
+            <button type="button" class="pill" data-tone="261.63" aria-label="Play Do note">Do</button>
+            <button type="button" class="pill" data-tone="329.63" aria-label="Play Mi note">Mi</button>
+            <button type="button" class="pill" data-tone="392.0" aria-label="Play So note">So</button>
           </div>
 
           <div class="list" id="configuredSongs"></div>
@@ -565,6 +565,7 @@
       let matchDeck = [];
       let selectedCards = [];
       let lockBoard = false;
+      let localAudioUrls = [];
       let audioCtx;
       let deferredPrompt;
 
@@ -756,7 +757,12 @@
         songs.forEach((song) => {
           const card = document.createElement('div');
           card.className = 'media-item';
-          card.innerHTML = `<h4>${song.title}</h4><p>${song.note || ''}</p>`;
+          const title = document.createElement('h4');
+          title.textContent = song.title || 'Song';
+          const note = document.createElement('p');
+          note.textContent = song.note || '';
+          card.appendChild(title);
+          card.appendChild(note);
 
           if (song.src) {
             const audio = document.createElement('audio');
@@ -772,9 +778,12 @@
 
       function buildLocalAudioList(files) {
         const root = document.getElementById('localAudioList');
+        localAudioUrls.forEach((url) => URL.revokeObjectURL(url));
+        localAudioUrls = [];
         root.innerHTML = '';
         Array.from(files).forEach((file) => {
           const url = URL.createObjectURL(file);
+          localAudioUrls.push(url);
           const card = document.createElement('div');
           card.className = 'media-item';
           const title = document.createElement('h4');
@@ -828,6 +837,7 @@
           const gain = audioCtx.createGain();
           osc.type = 'triangle';
           osc.frequency.value = Number(frequency);
+          // Exponential ramps cannot reach exactly zero, so a tiny minimum avoids runtime errors.
           gain.gain.value = 0.0001;
           gain.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.02);
           gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
