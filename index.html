@@ -3,419 +3,381 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Maleah's Playpad</title>
-    <meta name="description" content="A bright, playful toddler app made for fun learning, music, and games." />
-    <meta name="theme-color" content="#ff5e62" />
+    <title>Maleah’s Playpad</title>
+    <meta
+      name="description"
+      content="Maleah’s Playpad is a magical learning-first toddler PWA with counting, adding, matching, coloring, and safe media hooks."
+    />
+    <meta name="theme-color" content="#6b4efc" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Playpad" />
+    <meta name="apple-mobile-web-app-title" content="Maleah’s Playpad" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="apple-touch-icon" href="icons/icon-192.svg" />
     <style>
-      * {
-        box-sizing: border-box;
-        user-select: none;
-        -webkit-user-select: none;
+      :root {
+        --violet: #6b4efc;
+        --pink: #ff5ecf;
+        --mint: #7af7e6;
+        --sky: #5cb8ff;
+        --sun: #ffce6c;
+        --ink: #1f2240;
+        --white: #fff;
+        --card-shadow: 0 14px 28px rgba(46, 24, 95, 0.2);
       }
 
-      :root {
-        --pink: #ff5e62;
-        --orange: #ff9a00;
-        --yellow: #ffd93d;
-        --blue: #4d96ff;
-        --green: #6bcb77;
-        --purple: #b52bff;
-        --nav-bg: rgba(255, 255, 255, 0.22);
-        --card-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+      * {
+        box-sizing: border-box;
       }
 
       html,
       body {
         margin: 0;
         min-height: 100%;
-        font-family: "Comic Sans MS", "Trebuchet MS", cursive, sans-serif;
-        background: linear-gradient(135deg, var(--orange), var(--pink));
+        font-family: 'Nunito', 'Avenir Next', 'Segoe UI', sans-serif;
+        color: var(--ink);
+        background: radial-gradient(circle at 20% 20%, #98f4ff, #6a7aff 45%, #4e35ce 100%);
       }
 
-      body {
-        min-height: 100vh;
-        color: #222;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-
-      button {
-        font: inherit;
-      }
-
-      .app-shell {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-      }
-
-      .nav-bar {
-        display: flex;
-        gap: 8px;
-        overflow-x: auto;
-        padding: 10px;
-        background: var(--nav-bg);
-        backdrop-filter: blur(4px);
-      }
-
-      .nav-btn {
-        flex: 1 0 auto;
-        border: none;
-        border-radius: 999px;
-        padding: 12px 14px;
-        background: white;
-        color: var(--pink);
-        font-weight: 700;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-        cursor: pointer;
-        white-space: nowrap;
-      }
-
-      .nav-btn.active-btn {
-        background: #fff7d6;
-      }
-
-      .view-panel {
-        flex: 1;
-        display: none;
-        padding: 14px;
-      }
-
-      .view-panel.active {
-        display: block;
-      }
-
-      .panel-card {
-        height: 100%;
-        border-radius: 28px;
-        padding: 14px;
-        background: rgba(255, 255, 255, 0.14);
-      }
-
-      .grid,
-      .flip-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
-        height: 100%;
-      }
-
-      .card,
-      .flip-front,
-      .flip-back,
-      .piano-key,
-      .basket-area,
-      .ocean-action-btn {
-        box-shadow: var(--card-shadow);
-      }
-
-      .card {
-        background: white;
-        border: 4px solid #fff;
-        border-radius: 26px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 12px;
-        cursor: pointer;
-      }
-
-      .card:active,
-      .start-btn:active,
-      .nav-btn:active,
-      .ocean-action-btn:active,
-      .piano-key:active {
-        transform: scale(0.97);
-      }
-
-      .emoji {
-        font-size: 52px;
-      }
-
-      .label {
-        margin-top: 8px;
-        font-size: 16px;
-        font-weight: 800;
-        color: var(--pink);
-        text-transform: uppercase;
-      }
-
-      .flip-container {
-        perspective: 1000px;
-        min-height: 180px;
-        cursor: pointer;
-      }
-
-      .flip-card-inner {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        min-height: 180px;
-        transition: transform 0.6s;
-        transform-style: preserve-3d;
-      }
-
-      .flip-container.flipped .flip-card-inner {
-        transform: rotateY(180deg);
-      }
-
-      .flip-front,
-      .flip-back {
-        position: absolute;
-        inset: 0;
-        border-radius: 26px;
-        border: 4px solid white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        backface-visibility: hidden;
-      }
-
-      .flip-front {
-        background: var(--blue);
-        color: white;
-        font-size: 54px;
-      }
-
-      .flip-back {
-        background: white;
-        transform: rotateY(180deg);
-      }
-
-      .piano-container,
-      .apple-game-container,
-      .ocean-game-container {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        gap: 10px;
-      }
-
-      .info-title {
-        text-align: center;
-        color: white;
-        font-size: 18px;
-        font-weight: 800;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      }
-
-      .piano-keyboard {
-        flex: 1;
-        display: flex;
-        gap: 8px;
-        background: #333;
-        padding: 14px;
-        border-radius: 26px;
-      }
-
-      .piano-key {
-        flex: 1;
-        border: none;
-        border-radius: 0 0 18px 18px;
-        min-height: 220px;
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        padding-bottom: 18px;
-        font-size: 24px;
-        font-weight: 800;
-        cursor: pointer;
-      }
-
-      .apple-game-container {
-        background: #daf7eb;
-        border-radius: 26px;
-        padding: 12px;
-      }
-
-      .tree-area {
-        position: relative;
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-      }
-
-      .tree-canopy {
-        font-size: 138px;
-        cursor: pointer;
-        z-index: 2;
-      }
-
-      .falling-apple {
-        position: absolute;
-        font-size: 40px;
-        z-index: 1;
-        animation: fallDown 1s forwards cubic-bezier(0.6, -0.28, 0.735, 0.045);
-      }
-
-      @keyframes fallDown {
-        0% {
-          top: 28%;
-          transform: scale(0.6);
-          opacity: 1;
-        }
-        100% {
-          top: 82%;
-          transform: scale(1) rotate(15deg);
-          opacity: 1;
-        }
-      }
-
-      .basket-area {
-        min-height: 58px;
-        padding: 14px;
-        border-radius: 18px;
-        background: #8d6e63;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        font-weight: 800;
-        text-align: center;
-      }
-
-      .ocean-game-container {
-        background: linear-gradient(to bottom, #4ea3fc, #0052a3);
-        border-radius: 26px;
-        padding: 12px;
-      }
-
-      .ocean-btn-area {
-        display: flex;
-        gap: 10px;
-      }
-
-      .ocean-action-btn {
-        flex: 1;
-        border: none;
-        border-radius: 16px;
-        padding: 12px;
-        font-weight: 800;
-        background: white;
-        color: #0052a3;
-        cursor: pointer;
-      }
-
-      .water-play-zone {
-        flex: 1;
-        position: relative;
-        overflow: hidden;
-        border-radius: 20px;
-      }
-
-      .swimming-fish {
-        position: absolute;
-        font-size: 44px;
-        animation: swimBubble 3s infinite ease-in-out alternate;
-      }
-
-      @keyframes swimBubble {
-        from {
-          transform: translateY(0px);
-        }
-        to {
-          transform: translateY(-10px);
-        }
-      }
-
-      #overlay {
+      .intro {
         position: fixed;
         inset: 0;
-        z-index: 100;
-        background: linear-gradient(to bottom, var(--pink), var(--orange));
-        color: white;
+        z-index: 20;
         display: flex;
         flex-direction: column;
+        justify-content: center;
         align-items: center;
-        justify-content: space-between;
+        gap: 20px;
         text-align: center;
-        padding: 40px 20px calc(40px + env(safe-area-inset-bottom));
+        color: var(--white);
+        padding: 24px;
+        background: linear-gradient(160deg, rgba(48, 98, 230, 0.92), rgba(135, 53, 216, 0.95));
+        overflow: hidden;
       }
 
-      .welcome-title {
+      .intro::before,
+      .intro::after {
+        content: '✨';
+        position: absolute;
+        font-size: clamp(36px, 8vw, 70px);
+        animation: float 5s ease-in-out infinite;
+      }
+
+      .intro::before {
+        top: 11%;
+        left: 10%;
+      }
+
+      .intro::after {
+        right: 12%;
+        bottom: 14%;
+        animation-delay: 1.2s;
+      }
+
+      h1 {
         margin: 0;
-        font-size: clamp(34px, 7vw, 46px);
-        font-weight: 900;
-        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.25);
+        font-size: clamp(38px, 10vw, 68px);
+        text-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
       }
 
-      .welcome-sub {
-        margin-top: 10px;
-        font-size: clamp(18px, 4vw, 24px);
+      .subtitle {
+        margin: 0;
+        font-size: clamp(24px, 6vw, 40px);
+        font-weight: 800;
+      }
+
+      .hello {
+        max-width: 600px;
+        font-size: clamp(18px, 4vw, 26px);
+        font-weight: 700;
+        line-height: 1.4;
       }
 
       .start-btn {
         border: none;
         border-radius: 999px;
-        padding: 22px 50px;
-        background: white;
-        color: var(--pink);
-        font-size: 28px;
+        padding: 18px 36px;
+        font-size: clamp(22px, 5vw, 30px);
         font-weight: 900;
+        background: linear-gradient(120deg, #ffe88f, #ffb45c);
+        color: #6d3e06;
+        box-shadow: var(--card-shadow);
         cursor: pointer;
         animation: pulse 1.8s infinite;
       }
 
-      .welcome-footer {
-        margin: 0;
-        font-size: clamp(24px, 5vw, 34px);
-        font-weight: 900;
+      .app {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 14px;
+        gap: 12px;
       }
 
-      .install-banner {
+      .header {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 24px;
+        box-shadow: var(--card-shadow);
+        padding: 14px;
+      }
+
+      .header h2 {
+        margin: 0;
+        font-size: clamp(28px, 6vw, 40px);
+      }
+
+      .header p {
+        margin: 6px 0 0;
+        font-size: clamp(16px, 4vw, 20px);
+        font-weight: 700;
+      }
+
+      .nav {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .nav button {
+        border: none;
+        border-radius: 16px;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: 800;
+        color: var(--ink);
+        background: linear-gradient(130deg, #ffffff, #d4f6ff);
+        box-shadow: var(--card-shadow);
+      }
+
+      .nav button.active {
+        background: linear-gradient(130deg, #fff, #ffd3ee);
+        transform: translateY(-1px);
+      }
+
+      .panel {
+        display: none;
+      }
+
+      .panel.active {
+        display: block;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 24px;
+        box-shadow: var(--card-shadow);
+        padding: 14px;
+        margin-bottom: 12px;
+      }
+
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: clamp(20px, 5vw, 28px);
+      }
+
+      .card p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.4;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .actions button,
+      .pill,
+      .open-link {
+        border: none;
+        border-radius: 999px;
+        padding: 11px 16px;
+        font-size: 15px;
+        font-weight: 800;
+        background: linear-gradient(140deg, #85d5ff, #8afbe5);
+        color: #143245;
+        cursor: pointer;
+      }
+
+      .tree-scene,
+      .ocean-scene {
+        position: relative;
+        border-radius: 22px;
+        min-height: 220px;
+        overflow: hidden;
+        margin-top: 14px;
+      }
+
+      .tree-scene {
+        background: linear-gradient(#8de1ff 0 42%, #8ee9ae 42%);
+      }
+
+      .tree {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 24px;
+        width: 130px;
+        height: 164px;
+      }
+
+      .tree::before {
+        content: '';
+        position: absolute;
+        left: 42px;
+        bottom: 0;
+        width: 46px;
+        height: 78px;
+        border-radius: 18px;
+        background: #7f5337;
+      }
+
+      .tree::after {
+        content: '';
+        position: absolute;
+        left: 2px;
+        top: 0;
+        width: 126px;
+        height: 108px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 30% 28%, #d4ff9d, #2dc078 62%);
+        animation: sway 4s ease-in-out infinite;
+      }
+
+      .ocean-scene {
+        background: linear-gradient(#89d9ff 0 30%, #4eb5fd 40%, #2e7ad6 100%);
+      }
+
+      .fish-home {
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        font-size: 28px;
+        animation: swim 2.8s ease-in-out infinite;
+      }
+
+      .drop {
+        position: absolute;
+        top: 30px;
+        font-size: 30px;
+        animation: drop 1.4s ease forwards;
+      }
+
+      .results {
+        margin-top: 10px;
+        font-weight: 900;
+        font-size: 22px;
+        color: #45205a;
+      }
+
+      .match-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .match-card {
+        min-height: 74px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(145deg, #5b76ff, #895dff);
+        color: #fff;
+        font-size: 28px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .match-card.revealed,
+      .match-card.done {
+        background: linear-gradient(145deg, #fdf9ff, #d9f8ff);
+        color: #384159;
+      }
+
+      .palette {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+
+      .swatch {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 4px 10px rgba(20, 40, 80, 0.28);
+        cursor: pointer;
+      }
+
+      .swatch.active {
+        outline: 3px solid #3f2a83;
+      }
+
+      .color-board {
+        background: linear-gradient(140deg, #f8feff, #e8f1ff);
+        border-radius: 18px;
+        padding: 8px;
+      }
+
+      .color-board svg {
+        width: 100%;
+        height: auto;
+      }
+
+      .paint-region {
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .paint-region:active {
+        transform: scale(0.98);
+      }
+
+      .list {
+        display: grid;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .media-item {
+        background: #f7fdff;
+        border: 2px dashed #b8d7ff;
+        border-radius: 14px;
+        padding: 10px;
+      }
+
+      .media-item h4 {
+        margin: 0 0 6px;
+        font-size: 17px;
+      }
+
+      .media-item p {
+        margin: 0;
+      }
+
+      .legal-note {
+        margin-top: 10px;
+        background: #fff4d2;
+        border-radius: 14px;
+        padding: 10px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .install-tip {
         position: fixed;
         left: 12px;
         right: 12px;
         bottom: 12px;
-        z-index: 120;
         display: none;
-        background: rgba(255, 255, 255, 0.96);
-        border-radius: 20px;
-        padding: 14px 16px;
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
-      }
-
-      .install-banner.show {
-        display: block;
-      }
-
-      .install-banner h3 {
-        margin: 0 0 6px;
-        color: var(--pink);
-      }
-
-      .install-banner p {
-        margin: 0;
-        font-size: 14px;
-        line-height: 1.4;
-      }
-
-      .install-actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 10px;
-      }
-
-      .tiny-btn {
-        border: none;
-        background: var(--pink);
-        color: white;
-        border-radius: 999px;
-        padding: 8px 14px;
-        font-weight: 700;
-        cursor: pointer;
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 14px;
+        padding: 10px;
+        box-shadow: var(--card-shadow);
+        z-index: 15;
       }
 
       @keyframes pulse {
@@ -424,302 +386,517 @@
           transform: scale(1);
         }
         50% {
-          transform: scale(1.05);
+          transform: scale(1.06);
         }
       }
 
-      @media (max-width: 700px) {
-        .grid,
-        .flip-grid {
-          grid-template-columns: 1fr 1fr;
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
         }
+        50% {
+          transform: translateY(-14px);
+        }
+      }
 
-        .piano-key {
-          min-height: 160px;
+      @keyframes sway {
+        0%,
+        100% {
+          transform: rotate(0deg);
+        }
+        50% {
+          transform: rotate(-4deg);
+        }
+      }
+
+      @keyframes swim {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        50% {
+          transform: translateX(-14px);
+        }
+      }
+
+      @keyframes drop {
+        0% {
+          transform: translateY(-20px) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(170px) scale(0.86);
+          opacity: 0;
         }
       }
     </style>
   </head>
   <body>
-    <div id="overlay">
-      <div>
-        <h1 class="welcome-title">🌟 MALEAH'S PLAYPAD 🌟</h1>
-        <div class="welcome-sub">Are you ready to go up, up, up? ✨</div>
-      </div>
+    <section id="intro" class="intro">
+      <h1>Maleah’s Playpad</h1>
+      <p class="subtitle">Daddy’s Baby Girl</p>
+      <p class="hello">Hello Maleah! Daddy made this magical learning world just for you. Let’s count, match, color, and sing.</p>
+      <button class="start-btn" id="startBtn" type="button">Tap to Start Learning ✨</button>
+    </section>
 
-      <button class="start-btn" onclick="initApp()">TAP TO PLAY!</button>
+    <main class="app" aria-live="polite">
+      <header class="header">
+        <h2>🌈 Welcome, Maleah!</h2>
+        <p>Pick a learning adventure below.</p>
+      </header>
 
-      <h2 class="welcome-footer">💖 DADDY'S BABY GIRL 💖</h2>
-    </div>
+      <nav class="nav" id="nav"></nav>
 
-    <div class="app-shell">
-      <div class="nav-bar">
-        <button class="nav-btn active-btn" data-tab="home" onclick="showTab('home')">🎵 Music</button>
-        <button class="nav-btn" data-tab="piano" onclick="showTab('piano')">🎹 Piano</button>
-        <button class="nav-btn" data-tab="flips" onclick="showTab('flips')">🐶 Flips</button>
-        <button class="nav-btn" data-tab="learn" onclick="showTab('learn')">🌳 Apples</button>
-        <button class="nav-btn" data-tab="ocean" onclick="showTab('ocean')">🐠 Ocean Add</button>
-      </div>
+      <section class="panel active" id="panel-home">
+        <article class="card">
+          <h3>Magical Learning Paths</h3>
+          <p>Fruits, fish, stars, unicorn vibes, and ocean magic — all focused on early learning for ages 3–6.</p>
+        </article>
+      </section>
 
-      <div id="home" class="view-panel active">
-        <div class="panel-card">
-          <div class="grid">
-            <div class="card" onclick="speak('We are going up up up! It is our moment! We are going to be golden!')">
-              <span class="emoji">🚀</span>
-              <span class="label">Golden!</span>
-            </div>
-            <div class="card" onclick="speak('Five little monkeys jumping on the bed! One fell off and bumped his head!')">
-              <span class="emoji">🐵</span>
-              <span class="label">5 Monkeys</span>
-            </div>
-            <div class="card" onclick="speak('Bluey says, wackadoo! Let us play a game!')">
-              <span class="emoji">💙</span>
-              <span class="label">Bluey Time</span>
-            </div>
-            <div class="card" onclick="speak('I am Maleah, and I am daddy\'s baby girl!')">
-              <span class="emoji">👸</span>
-              <span class="label">Who am I?</span>
-            </div>
+      <section class="panel" id="panel-fruit">
+        <article class="card">
+          <h3>🍎 Tree Addition</h3>
+          <p>Tap the tree to drop apples in two groups. Then see the full addition equation.</p>
+          <div class="actions">
+            <button id="dropFruitBtn" type="button">Drop Apples</button>
+            <button id="resetFruitBtn" type="button">Reset</button>
           </div>
-        </div>
-      </div>
+          <div class="tree-scene" id="treeScene"><div class="tree" aria-hidden="true"></div></div>
+          <div class="results" id="fruitResult">Tap “Drop Apples” to begin.</div>
+        </article>
+      </section>
 
-      <div id="piano" class="view-panel">
-        <div class="panel-card">
-          <div class="piano-container">
-            <div class="info-title">🎹 TAP TO PLAY MUSIC! 🎹</div>
-            <div class="piano-keyboard">
-              <button class="piano-key" style="background:#FF4D4D;" onclick="playNote(261.63)">🔴</button>
-              <button class="piano-key" style="background:#FFA64D;" onclick="playNote(293.66)">🟠</button>
-              <button class="piano-key" style="background:#FFD93D;" onclick="playNote(329.63)">🟡</button>
-              <button class="piano-key" style="background:#6BCB77;" onclick="playNote(349.23)">🟢</button>
-              <button class="piano-key" style="background:#4D96FF;" onclick="playNote(392.00)">🔵</button>
-              <button class="piano-key" style="background:#B52BFF;" onclick="playNote(440.00)">🟣</button>
-            </div>
+      <section class="panel" id="panel-ocean">
+        <article class="card">
+          <h3>🐠 Ocean Addition</h3>
+          <p>First fish swim in, then more fish arrive. Count and add them together.</p>
+          <div class="actions">
+            <button id="addFishBtn" type="button">Add Fish</button>
+            <button id="resetFishBtn" type="button">Reset</button>
           </div>
-        </div>
-      </div>
+          <div class="ocean-scene" id="oceanScene"><span class="fish-home">🐬</span></div>
+          <div class="results" id="fishResult">Let’s count sea friends!</div>
+        </article>
+      </section>
 
-      <div id="flips" class="view-panel">
-        <div class="panel-card">
-          <div class="flip-grid">
-            <div class="flip-container" onclick="flipCard(this, 'Chase is on the case!')">
-              <div class="flip-card-inner">
-                <div class="flip-front">❓</div>
-                <div class="flip-back"><span class="emoji">🐶</span><span class="label">Chase</span></div>
-              </div>
-            </div>
-            <div class="flip-container" onclick="flipCard(this, 'Skye has gotta fly!')">
-              <div class="flip-card-inner">
-                <div class="flip-front">❓</div>
-                <div class="flip-back"><span class="emoji">🚁</span><span class="label">Skye</span></div>
-              </div>
-            </div>
-            <div class="flip-container" onclick="flipCard(this, 'Hooray! It is Bluey!')">
-              <div class="flip-card-inner">
-                <div class="flip-front">❓</div>
-                <div class="flip-back"><span class="emoji">🐕</span><span class="label">Bluey</span></div>
-              </div>
-            </div>
-            <div class="flip-container" onclick="flipCard(this, 'Dance mode activated with Bingo!')">
-              <div class="flip-card-inner">
-                <div class="flip-front">❓</div>
-                <div class="flip-back"><span class="emoji">🧡</span><span class="label">Bingo</span></div>
-              </div>
-            </div>
+      <section class="panel" id="panel-match">
+        <article class="card">
+          <h3>🧩 Matching Game</h3>
+          <p>Match pairs of learning cards (shape, color, object, instrument).</p>
+          <div class="actions"><button id="newMatchBtn" type="button">New Match Board</button></div>
+          <div class="match-grid" id="matchGrid"></div>
+          <div class="results" id="matchResult">Find all the pairs!</div>
+        </article>
+      </section>
+
+      <section class="panel" id="panel-color">
+        <article class="card">
+          <h3>🎨 Coloring Time</h3>
+          <p>Choose a color and tap a shape to paint your ocean-fantasy art.</p>
+          <div class="palette" id="palette"></div>
+          <div class="color-board">
+            <svg viewBox="0 0 260 170" role="img" aria-label="Coloring board with stars, fish, shell, moon and heart">
+              <circle class="paint-region" data-target="moon" id="moon" cx="35" cy="35" r="18" fill="#fff7cd" stroke="#333" stroke-width="2"></circle>
+              <polygon class="paint-region" data-target="star" id="star" points="90,18 97,34 114,36 101,47 104,64 90,55 76,64 79,47 66,36 83,34" fill="#ffe3a2" stroke="#333" stroke-width="2"></polygon>
+              <ellipse class="paint-region" data-target="fish" id="fish" cx="153" cy="70" rx="32" ry="20" fill="#bde7ff" stroke="#333" stroke-width="2"></ellipse>
+              <polygon class="paint-region" data-target="tail" id="tail" points="182,70 205,55 205,85" fill="#8ac8f8" stroke="#333" stroke-width="2"></polygon>
+              <path class="paint-region" data-target="shell" id="shell" d="M55 130 C55 95, 108 95, 108 130 Z" fill="#ffd7de" stroke="#333" stroke-width="2"></path>
+              <path class="paint-region" data-target="heart" id="heart" d="M195 123 C195 106 217 100 225 117 C233 100 255 106 255 123 C255 138 239 145 225 157 C211 145 195 138 195 123 Z" fill="#ffc4ee" stroke="#333" stroke-width="2"></path>
+            </svg>
           </div>
-        </div>
-      </div>
+        </article>
+      </section>
 
-      <div id="learn" class="view-panel">
-        <div class="panel-card">
-          <div class="apple-game-container">
-            <div class="info-title" style="color:#333; text-shadow:none;">🌳 TAP THE TREE TO DROP APPLES!</div>
-            <div class="tree-area" onclick="dropApple()">
-              <div class="tree-canopy">🌳</div>
-              <div id="apple-drop-zone"></div>
-            </div>
-            <div class="basket-area" id="score-basket">🧺 Basket: 0 Apples</div>
+      <section class="panel" id="panel-music">
+        <article class="card">
+          <h3>🎵 Music & Lullabies</h3>
+          <p>Use your own lawful audio files (family recordings, licensed songs, or public-domain performances).</p>
+          <div class="actions">
+            <button type="button" class="pill" data-tone="261.63">Do</button>
+            <button type="button" class="pill" data-tone="329.63">Mi</button>
+            <button type="button" class="pill" data-tone="392.0">So</button>
           </div>
-        </div>
-      </div>
 
-      <div id="ocean" class="view-panel">
-        <div class="panel-card">
-          <div class="ocean-game-container">
-            <div class="ocean-btn-area">
-              <button class="ocean-action-btn" onclick="startWaterGame()">💦 Splash Game!</button>
-              <button class="ocean-action-btn" onclick="checkWaterTotal()" style="background:#ffffd0;">🤔 How many total?</button>
-            </div>
-            <div class="water-play-zone" id="ocean-floor"></div>
-            <div class="basket-area" id="ocean-status" style="background:#003c77;">💧 Tap Splash Game to start!</div>
+          <div class="list" id="configuredSongs"></div>
+
+          <div class="media-item">
+            <h4>Play audio from this device</h4>
+            <p>Select your own audio files for this session:</p>
+            <input id="localAudioInput" type="file" accept="audio/*" multiple />
+            <div class="list" id="localAudioList"></div>
           </div>
-        </div>
-      </div>
-    </div>
 
-    <div id="installBanner" class="install-banner" role="status" aria-live="polite">
-      <h3>Add this app to iPhone</h3>
-      <p>
-        In Safari, tap the Share button, then choose <strong>Add to Home Screen</strong>.
-        After that, you can open it like an app and share the link with your daughter.
-      </p>
-      <div class="install-actions">
-        <button class="tiny-btn" onclick="dismissInstallBanner()">Got it</button>
-      </div>
-    </div>
+          <div class="legal-note">Only add audio you own, created, licensed, or are otherwise legally allowed to use.</div>
+        </article>
+      </section>
 
+      <section class="panel" id="panel-media">
+        <article class="card">
+          <h3>📺 External Media Launcher</h3>
+          <p>Curated links open outside this app (YouTube/streaming URLs you provide). External media is not downloaded or cached by this PWA.</p>
+          <div class="list" id="externalLinks"></div>
+          <div class="legal-note">This app only launches your configured external links. Keep links kid-safe and lawful.</div>
+        </article>
+      </section>
+    </main>
+
+    <aside class="install-tip" id="installTip">
+      Install tip (iPhone): Safari → Share → Add to Home Screen.
+    </aside>
+
+    <script src="./media-config.js"></script>
     <script>
-      let started = false;
-      let audioCtx = null;
-      let appleCount = 0;
-      let waterGameState = 0;
+      const tabs = [
+        { id: 'home', label: '🏠 Home' },
+        { id: 'fruit', label: '🍎 Tree Add' },
+        { id: 'ocean', label: '🐠 Ocean Add' },
+        { id: 'match', label: '🧩 Match' },
+        { id: 'color', label: '🎨 Color' },
+        { id: 'music', label: '🎵 Music' },
+        { id: 'media', label: '📺 Links' }
+      ];
 
-      function initApp() {
-        if (started) return;
-        started = true;
-        document.getElementById('overlay').style.display = 'none';
+      const palette = ['#ff5ecf', '#ffd166', '#53d8fb', '#88ef99', '#b994ff', '#ff8f8f', '#fff'];
+      let selectedColor = palette[0];
+      let fruitRound = [];
+      let fishRound = [];
+      let matchDeck = [];
+      let selectedCards = [];
+      let lockBoard = false;
+      let audioCtx;
+      let deferredPrompt;
 
-        try {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (error) {
-          console.warn('Audio not available', error);
-        }
-
-        speak("Hello, Maleah! You are daddy's baby girl! Let's play!");
-        maybeShowInstallBanner();
-      }
-
-      function showTab(tabId) {
-        document.querySelectorAll('.view-panel').forEach((panel) => panel.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach((button) => {
-          button.classList.toggle('active-btn', button.dataset.tab === tabId);
-        });
-        document.getElementById(tabId).classList.add('active');
-
-        if (tabId === 'learn') {
-          speak('Daddy made this tree grow for you to learn to add!');
-        }
-
-        if (tabId === 'ocean') {
-          clearOcean();
-          speak("Let's play in the water! Tap Splash Game to count fish!");
-          document.getElementById('ocean-status').innerText = '💧 Tap Splash Game!';
-        }
-      }
-
-      function speak(text) {
-        if (!('speechSynthesis' in window)) return;
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.pitch = 1.35;
-        msg.rate = 0.92;
+      function safeSpeak(text) {
+        if (!window.speechSynthesis) return;
         window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(msg);
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = 0.95;
+        utter.pitch = 1.05;
+        window.speechSynthesis.speak(utter);
       }
 
-      function playNote(frequency) {
-        if (!audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.value = frequency;
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.6);
+      function showPanel(id) {
+        document.querySelectorAll('.panel').forEach((panel) => panel.classList.remove('active'));
+        document.querySelectorAll('.nav button').forEach((button) => {
+          button.classList.toggle('active', button.dataset.id === id);
+        });
+        const panel = document.getElementById(`panel-${id}`);
+        if (panel) panel.classList.add('active');
       }
 
-      function flipCard(element, characterCatchphrase) {
-        element.classList.toggle('flipped');
-        if (element.classList.contains('flipped')) {
-          speak(characterCatchphrase);
-        }
-      }
-
-      function dropApple() {
-        appleCount += 1;
-        playNote(150 + appleCount * 20);
-        speak(String(appleCount));
-        document.getElementById('score-basket').innerText = `🧺 Basket: ${appleCount} Apples!`;
-
-        const dropZone = document.getElementById('apple-drop-zone');
-        const apple = document.createElement('div');
-        apple.className = 'falling-apple';
-        apple.innerText = '🍎';
-        const randomX = Math.floor(Math.random() * 60) - 30;
-        apple.style.left = `calc(50% + ${randomX}px)`;
-        dropZone.appendChild(apple);
-        setTimeout(() => apple.remove(), 1000);
-      }
-
-      function clearOcean() {
-        document.getElementById('ocean-floor').innerHTML = '';
-        waterGameState = 0;
-      }
-
-      function spawnFish(emoji, count, baseTop) {
-        const floor = document.getElementById('ocean-floor');
+      function addDrop(sceneId, emoji, count) {
+        const scene = document.getElementById(sceneId);
         for (let i = 0; i < count; i += 1) {
-          const fish = document.createElement('div');
-          fish.className = 'swimming-fish';
-          fish.innerText = emoji;
-          fish.style.left = `${12 + i * 22}%`;
-          fish.style.top = `${baseTop}%`;
-          fish.onclick = (event) => {
-            event.stopPropagation();
-            playNote(600);
-          };
-          floor.appendChild(fish);
+          const el = document.createElement('div');
+          el.className = 'drop';
+          el.textContent = emoji;
+          el.style.left = `${18 + Math.random() * 70}%`;
+          el.style.animationDelay = `${i * 0.1}s`;
+          scene.appendChild(el);
+          setTimeout(() => el.remove(), 1550);
         }
       }
 
-      function startWaterGame() {
-        if (waterGameState === 0) {
-          clearOcean();
-          spawnFish('🐠', 3, 25);
-          playNote(400);
-          speak('Look! One, two, three orange fish swimming in the water!');
-          document.getElementById('ocean-status').innerText = '🐠 3 Orange Fish! Tap Splash again!';
-          waterGameState = 1;
-        } else if (waterGameState === 1) {
-          spawnFish('🐟', 2, 58);
-          playNote(500);
-          speak('Look out! One, two more green fish swim out!');
-          document.getElementById('ocean-status').innerText = '🐠 3 Orange + 🐟 2 Green Fish!';
-          waterGameState = 2;
-          setTimeout(() => speak('How many total fish are there now, Maleah?'), 2500);
-        } else {
-          clearOcean();
-          startWaterGame();
-        }
-      }
-
-      function checkWaterTotal() {
-        if (waterGameState < 2) {
-          speak('Tap Splash Game first to bring all the fish out!');
+      function updateFruit() {
+        if (fruitRound.length === 0) {
+          const first = Math.floor(Math.random() * 3) + 1;
+          fruitRound.push(first);
+          addDrop('treeScene', '🍎', first);
+          document.getElementById('fruitResult').textContent = `First drop: ${first} apples`;
+          safeSpeak(`Great counting! First we have ${first} apples.`);
           return;
         }
-        playNote(523.25);
-        speak('Three orange fish plus two green fish makes five fish total! You are so smart!');
-        document.getElementById('ocean-status').innerText = '🎉 3 + 2 = 5 Fish Total!';
+
+        if (fruitRound.length === 1) {
+          const second = Math.floor(Math.random() * 4) + 1;
+          fruitRound.push(second);
+          addDrop('treeScene', '🍎', second);
+          const total = fruitRound[0] + fruitRound[1];
+          document.getElementById('fruitResult').textContent = `${fruitRound[0]} + ${fruitRound[1]} = ${total}`;
+          safeSpeak(`Daddy planted this tree to help you learn! ${fruitRound[0]} plus ${fruitRound[1]} equals ${total}.`);
+          return;
+        }
+
+        fruitRound = [];
+        document.getElementById('fruitResult').textContent = 'Round reset. Tap Drop Apples again!';
       }
 
-      function maybeShowInstallBanner() {
+      function resetFruit() {
+        fruitRound = [];
+        document.getElementById('fruitResult').textContent = 'Tap “Drop Apples” to begin.';
+      }
+
+      function updateFish() {
+        if (fishRound.length === 0) {
+          const first = Math.floor(Math.random() * 4) + 1;
+          fishRound.push(first);
+          addDrop('oceanScene', '🐟', first);
+          document.getElementById('fishResult').textContent = `First swim: ${first} fish`;
+          safeSpeak(`Count with me. ${first} fish are swimming!`);
+          return;
+        }
+
+        if (fishRound.length === 1) {
+          const second = Math.floor(Math.random() * 4) + 1;
+          fishRound.push(second);
+          addDrop('oceanScene', '🐠', second);
+          const total = fishRound[0] + fishRound[1];
+          document.getElementById('fishResult').textContent = `${fishRound[0]} + ${fishRound[1]} = ${total}`;
+          safeSpeak(`${fishRound[0]} fish plus ${fishRound[1]} fish makes ${total} fish!`);
+          return;
+        }
+
+        fishRound = [];
+        document.getElementById('fishResult').textContent = 'Round reset. Tap Add Fish again!';
+      }
+
+      function resetFish() {
+        fishRound = [];
+        document.getElementById('fishResult').textContent = 'Let’s count sea friends!';
+      }
+
+      function shuffle(arr) {
+        const copy = [...arr];
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function buildMatchGame() {
+        const pairs = ['🔺', '🟦', '🍓', '🥁'];
+        matchDeck = shuffle([...pairs, ...pairs]).map((emoji, index) => ({ id: index, emoji, matched: false }));
+        selectedCards = [];
+        lockBoard = false;
+        renderMatchGame();
+        document.getElementById('matchResult').textContent = 'Find all the pairs!';
+      }
+
+      function renderMatchGame() {
+        const grid = document.getElementById('matchGrid');
+        grid.innerHTML = '';
+        matchDeck.forEach((card, i) => {
+          const button = document.createElement('button');
+          button.className = 'match-card';
+          const isSelected = selectedCards.some((pick) => pick.index === i);
+          if (isSelected || card.matched) {
+            button.classList.add(card.matched ? 'done' : 'revealed');
+            button.textContent = card.emoji;
+          } else {
+            button.textContent = '❔';
+          }
+          button.type = 'button';
+          button.disabled = card.matched || lockBoard;
+          button.addEventListener('click', () => chooseCard(i));
+          grid.appendChild(button);
+        });
+      }
+
+      function chooseCard(index) {
+        if (lockBoard || selectedCards.some((pick) => pick.index === index)) return;
+        selectedCards.push({ index, emoji: matchDeck[index].emoji });
+        renderMatchGame();
+
+        if (selectedCards.length < 2) return;
+
+        lockBoard = true;
+        const [a, b] = selectedCards;
+        if (a.emoji === b.emoji) {
+          matchDeck[a.index].matched = true;
+          matchDeck[b.index].matched = true;
+          selectedCards = [];
+          lockBoard = false;
+          renderMatchGame();
+          const done = matchDeck.every((card) => card.matched);
+          if (done) {
+            document.getElementById('matchResult').textContent = 'You matched them all! 🎉';
+            safeSpeak('Amazing matching! You found every pair.');
+          }
+          return;
+        }
+
+        setTimeout(() => {
+          selectedCards = [];
+          lockBoard = false;
+          renderMatchGame();
+        }, 650);
+      }
+
+      function buildPalette() {
+        const paletteRoot = document.getElementById('palette');
+        palette.forEach((color, index) => {
+          const swatch = document.createElement('button');
+          swatch.className = 'swatch';
+          swatch.type = 'button';
+          swatch.style.background = color;
+          if (index === 0) swatch.classList.add('active');
+          swatch.addEventListener('click', () => {
+            selectedColor = color;
+            document.querySelectorAll('.swatch').forEach((el) => el.classList.remove('active'));
+            swatch.classList.add('active');
+          });
+          paletteRoot.appendChild(swatch);
+        });
+
+        document.querySelectorAll('.paint-region').forEach((shape) => {
+          shape.addEventListener('click', () => {
+            shape.setAttribute('fill', selectedColor);
+          });
+        });
+      }
+
+      function buildConfiguredSongs() {
+        const list = document.getElementById('configuredSongs');
+        list.innerHTML = '';
+        const songs = (window.PLAYPAD_MEDIA_CONFIG && window.PLAYPAD_MEDIA_CONFIG.songs) || [];
+
+        songs.forEach((song) => {
+          const card = document.createElement('div');
+          card.className = 'media-item';
+          card.innerHTML = `<h4>${song.title}</h4><p>${song.note || ''}</p>`;
+
+          if (song.src) {
+            const audio = document.createElement('audio');
+            audio.controls = true;
+            audio.preload = 'none';
+            audio.src = song.src;
+            card.appendChild(audio);
+          }
+
+          list.appendChild(card);
+        });
+      }
+
+      function buildLocalAudioList(files) {
+        const root = document.getElementById('localAudioList');
+        root.innerHTML = '';
+        Array.from(files).forEach((file) => {
+          const url = URL.createObjectURL(file);
+          const card = document.createElement('div');
+          card.className = 'media-item';
+          const title = document.createElement('h4');
+          title.textContent = file.name;
+          const audio = document.createElement('audio');
+          audio.controls = true;
+          audio.src = url;
+          card.appendChild(title);
+          card.appendChild(audio);
+          root.appendChild(card);
+        });
+      }
+
+      function buildExternalLinks() {
+        const root = document.getElementById('externalLinks');
+        root.innerHTML = '';
+        const links = (window.PLAYPAD_MEDIA_CONFIG && window.PLAYPAD_MEDIA_CONFIG.externalLinks) || [];
+
+        links.forEach((entry) => {
+          const card = document.createElement('div');
+          card.className = 'media-item';
+          const title = document.createElement('h4');
+          title.textContent = entry.title;
+          const note = document.createElement('p');
+          note.textContent = entry.note || '';
+          const button = document.createElement('button');
+          button.className = 'open-link';
+          button.type = 'button';
+
+          if (entry.url) {
+            button.textContent = 'Open Link';
+            button.addEventListener('click', () => {
+              window.open(entry.url, '_blank', 'noopener');
+            });
+          } else {
+            button.textContent = 'Add URL in media-config.js';
+            button.disabled = true;
+          }
+
+          card.appendChild(title);
+          card.appendChild(note);
+          card.appendChild(button);
+          root.appendChild(card);
+        });
+      }
+
+      function playTone(frequency) {
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = Number(frequency);
+          gain.gain.value = 0.0001;
+          gain.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+          osc.connect(gain).connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.5);
+        } catch (error) {
+          console.warn('Audio unavailable', error);
+        }
+      }
+
+      function initNavigation() {
+        const nav = document.getElementById('nav');
+        tabs.forEach((tab) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.dataset.id = tab.id;
+          button.textContent = tab.label;
+          if (tab.id === 'home') button.classList.add('active');
+          button.addEventListener('click', () => showPanel(tab.id));
+          nav.appendChild(button);
+        });
+      }
+
+      function initInstallTip() {
+        const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-        if (isStandalone) return;
-        document.getElementById('installBanner').classList.add('show');
+        if (isIOS && !isStandalone) {
+          document.getElementById('installTip').style.display = 'block';
+        }
       }
 
-      function dismissInstallBanner() {
-        document.getElementById('installBanner').classList.remove('show');
-      }
+      document.getElementById('dropFruitBtn').addEventListener('click', updateFruit);
+      document.getElementById('resetFruitBtn').addEventListener('click', resetFruit);
+      document.getElementById('addFishBtn').addEventListener('click', updateFish);
+      document.getElementById('resetFishBtn').addEventListener('click', resetFish);
+      document.getElementById('newMatchBtn').addEventListener('click', buildMatchGame);
+      document.getElementById('localAudioInput').addEventListener('change', (event) => buildLocalAudioList(event.target.files));
+      document.querySelectorAll('[data-tone]').forEach((button) => {
+        button.addEventListener('click', () => playTone(button.dataset.tone));
+      });
+
+      document.getElementById('startBtn').addEventListener('click', () => {
+        document.getElementById('intro').style.display = 'none';
+        const greeting = window.PLAYPAD_MEDIA_CONFIG && window.PLAYPAD_MEDIA_CONFIG.greetingAudio;
+        if (greeting) {
+          const player = new Audio(greeting);
+          player.play().catch(() => safeSpeak('Hello Maleah! Ready to learn with Daddy’s Playpad?'));
+        } else {
+          safeSpeak('Hello Maleah! Ready to learn with Daddy’s Playpad?');
+        }
+      });
+
+      window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        deferredPrompt = event;
+      });
+
+      initNavigation();
+      buildPalette();
+      buildMatchGame();
+      buildConfiguredSongs();
+      buildExternalLinks();
+      initInstallTip();
 
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('./sw.js').catch((error) => {
-            console.warn('Service worker registration failed:', error);
+            console.warn('Service worker registration failed', error);
           });
         });
       }

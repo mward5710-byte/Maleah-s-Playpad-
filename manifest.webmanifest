@@ -1,11 +1,12 @@
 {
-  "name": "Maleah's Playpad",
+  "name": "Maleah’s Playpad",
   "short_name": "Playpad",
-  "description": "A colorful toddler play app with music, matching, counting, and ocean fun.",
+  "description": "A magical learning-focused toddler PWA with counting, addition, matching, coloring, and safe media hooks.",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#ff9a00",
-  "theme_color": "#ff5e62",
+  "background_color": "#4e35ce",
+  "theme_color": "#6b4efc",
   "icons": [
     {
       "src": "icons/icon-192.svg",
