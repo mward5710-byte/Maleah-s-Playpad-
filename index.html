@@ -561,6 +561,9 @@
       let audioCtx;
       let deferredPrompt;
       const EXPONENTIAL_RAMP_MIN_VALUE = 0.0001;
+      const TONE_PEAK_GAIN = 0.2;
+      const TONE_ATTACK_TIME = 0.02;
+      const TONE_RELEASE_TIME = 0.5;
 
       function safeSpeak(text) {
         if (!window.speechSynthesis) return;
@@ -769,10 +772,10 @@
         });
       }
 
-      function isAllowedMediaUrl(value, allowedProtocols) {
+      function isSafeHttpUrl(value) {
         try {
           const parsed = new URL(value, window.location.href);
-          return allowedProtocols.includes(parsed.protocol);
+          return parsed.protocol === 'http:' || parsed.protocol === 'https:';
         } catch (error) {
           return false;
         }
@@ -797,7 +800,7 @@
           if (entry.url) {
             button.textContent = 'Open Link';
             button.addEventListener('click', () => {
-              if (isAllowedMediaUrl(entry.url, ['http:', 'https:'])) {
+              if (isSafeHttpUrl(entry.url)) {
                 window.open(entry.url, '_blank', 'noopener');
               }
             });
@@ -822,11 +825,11 @@
           osc.frequency.value = Number(frequency);
           // Exponential ramps cannot reach exactly zero, so a tiny minimum avoids runtime errors.
           gain.gain.setValueAtTime(EXPONENTIAL_RAMP_MIN_VALUE, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.2, audioCtx.currentTime + 0.02);
-          gain.gain.exponentialRampToValueAtTime(EXPONENTIAL_RAMP_MIN_VALUE, audioCtx.currentTime + 0.5);
+          gain.gain.exponentialRampToValueAtTime(TONE_PEAK_GAIN, audioCtx.currentTime + TONE_ATTACK_TIME);
+          gain.gain.exponentialRampToValueAtTime(EXPONENTIAL_RAMP_MIN_VALUE, audioCtx.currentTime + TONE_RELEASE_TIME);
           osc.connect(gain).connect(audioCtx.destination);
           osc.start();
-          osc.stop(audioCtx.currentTime + 0.5);
+          osc.stop(audioCtx.currentTime + TONE_RELEASE_TIME);
         } catch (error) {
           console.warn('Audio unavailable', error);
         }

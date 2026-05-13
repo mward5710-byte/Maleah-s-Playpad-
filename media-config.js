@@ -1,7 +1,7 @@
 /**
- * @typedef {{title:string, src:string, note?:string}} PlaypadSong
- * @typedef {{title:string, url:string, note?:string}} PlaypadExternalLink
- * @type {{greetingAudio:string, songs:PlaypadSong[], externalLinks:PlaypadExternalLink[]}}
+ * @typedef {{title:string, src:string, note?:string}} MaleahPlaypadSong
+ * @typedef {{title:string, url:string, note?:string}} MaleahPlaypadExternalLink
+ * @type {{greetingAudio:string, songs:MaleahPlaypadSong[], externalLinks:MaleahPlaypadExternalLink[]}}
  */
 window.PLAYPAD_MEDIA_CONFIG = {
   greetingAudio: '',
